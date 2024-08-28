@@ -12,15 +12,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Import the User model
 import User from "./model/user.model.js";
-// const user0 = new User({
-//   name: "Abiola",
-//   email: "abi01@gmail.com",
-//   age: 22,
-// });
-// user0
-//   .save()
-//   .then((person) => console.log("user saved:", person))
-//   .catch((error) => console.error("Error saving user:", error));
 
 // GET: Return all users
 app.get("/users", async (req, res) => {
@@ -34,11 +25,7 @@ app.get("/users", async (req, res) => {
 
 // POST: Add a new user to the database
 app.post("/users", async (req, res) => {
-  const user1 = new User({
-    name: "joy",
-    email: "joyt@gmail.com",
-    age: 20,
-  });
+  const user1 = new User(req.body);
   try {
     const newUser = await user1.save();
     res.status(201).json(newUser);
@@ -50,11 +37,9 @@ app.post("/users", async (req, res) => {
 // PUT: Edit a user by ID
 app.put("/users/:id", async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      { _id: "66cdb9b831dd9be44f82f162" },
-      { name: "janet" },
-      { new: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
     res.status(200).json(updatedUser);
@@ -66,9 +51,7 @@ app.put("/users/:id", async (req, res) => {
 // DELETE: Remove a user by ID
 app.delete("/users/:id", async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete({
-      _id: "66cdbe6da821697aa2332d09",
-    });
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser)
       return res.status(404).json({ message: "User not found" });
     res.status(200).json({ message: "User deleted" });
